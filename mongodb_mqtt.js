@@ -8,7 +8,7 @@ var yesterdayEnd = new Date(new Date(new Date().setHours(new Date().getHours(),0
 var lasttime = yesterdayStart.toLocaleString('zh-hant', { timeZone: 'Asia/Taipei' })
 var nowtime = yesterdayEnd.toLocaleString('zh-hant', { timeZone: 'Asia/Taipei' })
 var right_fan_db,left_fan_db
-const client  = mqtt.connect('mqtt://192.168.1.138')
+const client  = mqtt.connect('mqtt://10.20.0.19')
 console.log(lasttime)
 console.log(nowtime)
 // arduinoport.on("open", (err) => {  
@@ -41,11 +41,11 @@ switch(topic) {
         console.log(Sensor_data[i])
         client.publish('TVOC_left', JSON.stringify(Sensor_data[i]))
         break;
-      case 'tempareture':
+      case 'Temperature':
         console.log(Sensor_data[i])
         client.publish('tempareture_left', JSON.stringify(Sensor_data[i]))
         break;
-      case 'humid':
+      case 'Humidity':
         console.log(Sensor_data[i])
         client.publish('humid_left', JSON.stringify(Sensor_data[i]))
         break;
@@ -61,11 +61,13 @@ switch(topic) {
     let udate = new Date();
     let time = udate.toLocaleString('zh-hant', { timeZone: 'Asia/Taipei' })
     // console.log('connection success')
+    console.log(time)
     left_fan_db.collection('data',async function(err,collection){
         var db_table = left_fan_db.collection(Sensor_key[i])
         db_table.insertOne({ time:time, name:Sensor_key[i], data:Sensor_data[i] });
     });
     }
+    break;
     case 'rpi_right':
         console.log(message)
         Arduno_data = JSON.parse(message);
@@ -84,11 +86,11 @@ switch(topic) {
             console.log(Sensor_data[i])
             client.publish('TVOC_right', JSON.stringify(Sensor_data[i]))
             break;
-          case 'tempareture':
+          case 'Temperature':
             console.log(Sensor_data[i])
             client.publish('tempareture_right', JSON.stringify(Sensor_data[i]))
             break;
-          case 'humid':
+          case 'Humidity':
             console.log(Sensor_data[i])
             client.publish('humid_right', JSON.stringify(Sensor_data[i]))
             break;
@@ -110,7 +112,7 @@ switch(topic) {
         }
 }
 })
-MongoClient.connect("mongodb://127.0.0.1:27017/test", function(err,client){
+MongoClient.connect("mongodb://127.0.0.1:27017", function(err,client){
 if(err){
     console.log(err);
     console.log('connecting fail');
